@@ -5,7 +5,6 @@ This is the TypeScript style guide that we use internally at Platypi! It is *sem
 
 ## Table of Contents
 
-  0. [Introduction](#introduction)
   0. [Browser Compatibility](#browser-compatibility)
   0. [Files](#files)
   0. [Indentation](#indentation)
@@ -48,22 +47,18 @@ This is the TypeScript style guide that we use internally at Platypi! It is *sem
   0. [TSLint](#tslint)
   0. [License](#license)
 
-## Introduction
-When developing software as an organization, the value of the software produced is directly affected by the quality of the codebase. Consider a project that is developed over many years and handled/seen by many different people. If the project uses a consistent coding convention it is easier for new developers to read, preventing a lot of time/frustration spent figuring out the structure and characteristics of the code. For that purpose, we need to make sure we adhere to the same coding conventions across all of our products. This will not only help new developers, but it will also aid in quickly identifying potential flaws in the code, thereby reducing the brittleness of the code.
-
 **[top](#table-of-contents)**
 
 ## Browser Compatibility
   - Target evergreen browsers `ie >= 11`
-  - Target modern browsers `ie >= 9` if it is necessary for a project
+  - Target modern browsers `ie >= 10` if it is necessary for a project
   - Avoid targeting older browsers `ie < 9` if at all possible
 
 **[top](#table-of-contents)**
 
 ## Files
   - All TypeScript files must have a ".ts" extension.
-  - They should be all lower case, and only include letters, numbers, and periods.
-  - It is OK (even recommended) to separate words with periods (e.g. `my.view.html`).
+  - They should be all camelCase case, and only include letters and numbers.
   - **All files should end in a new line.** This is necessary for some Unix systems.
 
 **[top](#table-of-contents)**
@@ -75,8 +70,8 @@ When developing software as an organization, the value of the software produced 
 **[top](#table-of-contents)**
 
 ## Line Length
-  - Lines must not be longer than 140 characters.
-  - When a statement runs over 140 characters on a line, it should be broken up, ideally after a comma or operator.
+  - Lines must not be longer than 200 characters.
+  - When a statement runs over 200 characters on a line, it should be broken up, ideally after a comma or operator.
 
 **[top](#table-of-contents)**
 
@@ -121,8 +116,8 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   ```typescript
   /**
    * Takes in a name and returns a greeting string.
-   *
-   * @param name The name of the greeted person.
+   * @param {string} name The name of the greeted person.
+   * @returns {string} Greeting string.
    */
   function getGreeting(name: string): string {
       return 'Hello ' + name + '!';
@@ -134,7 +129,7 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   - All classes must have block comments `/**...*/` for all public variables and functions.
   - All public functions should use [JSDoc](http://usejsdoc.org/) style comments.
   - Functions need to have a comment explaining what the function does, and all of the input parameters need to be annotated with `@param`.
-  - The class should include a block comment containing the description of the class
+  - The class should include a block comment containing the description of the class.
   - The constructor should contain a JSDoc comment annotating any input parameters.
 
   ```typescript
@@ -144,23 +139,22 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   class Person {
       /**
        * Returns a new Person with the specified name.
-       *
-       * @param name The name of the new Person.
+       * @param {string} name The name of the new Person.
+       * @returns {Person} A new person.
        */
       static GetPerson(name: string): Person {
           return new Person(name);
       }
 
       /**
-       * @param name The name of the new Person.
+       * @param {string} name The name of the new Person.
        */
       constructor(public name: string) { }
 
       /**
        * Instructs this Person to walk for a certain amount
        * of time.
-       *
-       * @param millis The number of milliseconds the Person
+       * @param {number} millis - The number of milliseconds the Person
        * should walk.
        */
       walkFor(millis: number): void {
@@ -232,11 +226,11 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   console.log(a + b);
 
   let a = 2,
-      b = 4;
+  let b = 4;
 
   // good
   let a = 2,
-      b = 4;
+  let b = 4;
 
   console.log(a + b);
   ```
@@ -255,18 +249,18 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   ```
 
   - Use one `let` keyword to define a block of variables.
-  - Declare each variable on a newline.
+  - Declare each variable on a newline with own let statement.
 
   ```typescript
   // bad
   let a = 2;
-  let b = 2;
-  let c = 4;
+      b = 2;
+      c = 4;
 
   // good
   let a = 2,
-      b = 2,
-      c = 4;
+  let b = 2,
+  let c = 4;
 
   // bad
   // b will be defined on global scope.
@@ -362,7 +356,7 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
       this.foo = 'foo';
 
-      element.addEventListener('click', function(ev: Event) {
+      element.addEventListener('click', function(event: Event) {
           // this.foo does not exist!
           alert(this.foo);
       });
@@ -374,7 +368,7 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
       this.foo = 'foo';
 
-      element.addEventListener('click', (ev: Event) => {
+      element.addEventListener('click', (event: Event) => {
           // TypeScript allows this.foo to exist!
           alert(this.foo);
       });
@@ -386,10 +380,10 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
   ```typescript
   // bad
-  element.addEventListener('click', (ev: Event)=>{alert('foo');});
+  element.addEventListener('click', (event: Event)=>{alert('foo');});
 
   // good
-  element.addEventListener('click', (ev: Event) => {
+  element.addEventListener('click', (event: Event) => {
       alert('foo');
   });
   ```
@@ -402,7 +396,7 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
 ## Names
 
-  - All variable and function names should be formed with alphanumeric `A-Z, a-z, 0-9` and underscore `_` charcters.
+  - All variable and function names should be formed with alphanumeric `A-Z, a-z, 0-9` charcters using lowerCamelCase or UpperCamelCase notiation.
 
 ### Variables, Modules, and Functions
 
@@ -420,8 +414,8 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
   - Always favor type inference over explicit type declaration except for function return types
   - Always define the return type of functions.
-  - Types should be used whenever necessary (no implicit `any`).
-  - Arrays should be defined as `Array<type>` instead of `type[]`.
+  - Always specify variable type.
+  - Arrays should be defined as `type[]` instead of `Array<type>`.
   - Use the `any` type sparingly, it is always better to define an interface.
 
   ```typescript
@@ -429,10 +423,10 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   let numbers = [];
 
   // bad
-  let numbers: number[] = [];
+  let numbers: Array<number> = [];
 
   // good
-  let numbers: Array<number> = [];
+  let numbers: number[] = [];
   ```
 
 **[top](#table-of-contents)**
@@ -441,16 +435,18 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
   - Classes/Constructors should use UpperCamelCase (PascalCase).
   - `Private` and `private static` members in classes should be denoted with the `private` keyword.
-  - `Protected` members in classes do not use the `private` keyword.
-  - Default to using `protected` for all instance members
-  - Use `private` instance members sparingly
+  - `Protected`  members in classes should be denoted with the `protected` keyword.
   - Use `public` instance members only when they are used by other parts of the application.
 
   ```typescript
   class Person {
-      protected fullName: string;
+      private fullName: string;
+      public firstName: string;
+      public lastName: string;
 
-      constructor(public firstName: string, public lastName: string) {
+      constructor(firstName: string, lastName: string) {
+          this.firstName = firstName;
+          this.lastName = lastName;
           this.fullName = firstName + ' ' + lastName;
       }
 
@@ -489,7 +485,7 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
 ### Constants
 
-  - All constants should use UPPER_SNAKE_CASE.
+  - All constants should use lowerCamelCase.
   - All constants you be defined with the `const` keyword.
 
 **[top](#table-of-contents)**
@@ -503,12 +499,12 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
   ```typescript
   // bad
-  let greeting = 'Hello World'
+  let greeting: string = 'Hello World'
 
   alert(greeting)
 
   // good
-  let greeting = 'Hello World';
+  let greeting: string = 'Hello World';
 
   alert(greeting);
   ```
@@ -580,18 +576,20 @@ It appears the intention of the above code is to return if `condition === true`,
 ### Return
 
   - If a `return` statement has a value you should not use parenthesis `()` around the value.
+  - Avoid of returning statements. If you need to return statement - assign statement to the new variable and return it.
   - The return value expression must start on the same line as the `return` keyword.
 
   ```typescript
   // bad
   return
-      'Hello World!';
+      'Hello, ' + this.fullName + '!';
 
   // bad
-  return ('Hello World!');
+  return ('Hello, ' + this.fullName + '!');
 
   // good
-  return 'Hello World!';
+  let greeting: string = 'Hello, ' + this.fullName + '!';
+  return greeting;
   ```
 
   - It is recommended to take a return-first approach whenever possible.
@@ -599,7 +597,7 @@ It appears the intention of the above code is to return if `condition === true`,
   ```typescript
   // bad
   function getHighestNumber(a: number, b: number): number {
-      let out = b;
+      let out: number = b;
 
       if(a >= b) {
           out = a;
@@ -623,12 +621,14 @@ It appears the intention of the above code is to return if `condition === true`,
   ```typescript
   // bad
   function getPerson(name: string) {
-      return new Person(name);
+      var person: Person = new Person(name);
+      return person;
   }
 
   // good
   function getPerson(name: string): Person {
-      return new Person(name);
+      var person: Person = new Person(name);
+      return person;
   }
   ```
 
@@ -646,7 +646,8 @@ It appears the intention of the above code is to return if `condition === true`,
 
   // good
   function isString(str: any) {
-      return typeof str === 'string';
+      let result: boolean = (typeof str === 'string');
+      return result;
   }
   ```
 
@@ -685,17 +686,17 @@ For statements should have the following form:
       // ...
   }
 
-  let keys = Object.keys(/* object */),
-      length = keys.length;
+  let keys: string[] = Object.keys(/* object */),
+  let length = keys.length;
 
-  for(let i = 0; i < length; ++i) {
+  for(let i: number = 0; i < length; i++) {
       // ...
   }
   ```
 
 Object.prototype.keys is supported in `ie >= 9`.
 
-  - Use Object.prototype.keys in lieu of a `for...in` statement.
+  - Use _.keys() in lieu of a `for...in` statement.
 
 **[top](#table-of-contents)**
 
@@ -803,44 +804,44 @@ Blank lines improve code readability by allowing the developer to logically grou
 
   ```typescript
   // bad
-  let sum = a+b;
+  let sum: number = a+b;
 
   // good
-  let sum = a + b;
+  let sum: number = a + b;
 
   // bad
-  let name = person . name;
+  let name: string = person . name;
 
   // good
-  let name = person.name;
+  let name: string = person.name;
 
   // bad
-  let item = items [4];
+  let item: number = items [4];
 
   // good
-  let item = items[4];
+  let item: number = items[4];
   ```
 
   - No space should separate a unary/incremental operator `!x, -x, +x, ~x, ++x, --x` and its operand.
 
   ```typescript
   // bad
-  let neg = - a;
+  let negative: number = - a;
 
   // good
-  let neg = -a;
+  let negative: number = -a;
   ```
 
   - Each semicolon `;` in the control part of a `for` statement should be followed with a space.
 
   ```typescript
   // bad
-  for(let i = 0;i < 10;++i) {
+  for(let i: number = 0;i < 10;i++) {
       // ...
   }
 
   // good
-  for(let i = 0; i < 10; ++i) {
+  for(let i: number = 0; i < 10; i++) {
       // ...
   }
   ```
@@ -892,14 +893,14 @@ Blank lines improve code readability by allowing the developer to logically grou
 
   - Create declaration files `.d.ts` for your interfaces instead of putting them in your `.ts` files
   - Let the TypeScript compiler infer as much as possible
-  - Avoid defining types when it is unnecessary
+  - Always define types.
 
   ```typescript
   // bad
-  let a: number = 2;
+  let a = 2;
 
   // good
-  let a = 2;
+  let a: number = 2;
   ```
 
   - Always define the return type of functions, this helps to make sure that functions always return the correct type
@@ -907,12 +908,14 @@ Blank lines improve code readability by allowing the developer to logically grou
   ```typescript
   // bad
   function sum(a: number, b: number) {
-      return a + b;
+      var result: number =  a + b;
+      return result;
   }
 
   // good
   function sum(a: number, b: number): number {
-      return a + b;
+      var result: number =  a + b;
+      return result;
   }
   ```
 
