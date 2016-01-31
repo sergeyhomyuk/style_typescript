@@ -22,6 +22,7 @@ This is the TypeScript style guide that we use internally at Platypi! It is *sem
     0. [Use of var, let, and const](#use-of-var-let-and-const)
     0. [Types](#types)
     0. [Classes](#classes)
+    0. [Enumerations](#enumerations)    
     0. [Interfaces](#interfaces)
     0. [Constants](#constants)
   0. [Statements](#statements)
@@ -42,6 +43,10 @@ This is the TypeScript style guide that we use internally at Platypi! It is *sem
   0. [Typings](#assignment-expressions)
     0. [External](#external)
     0. [Internal](#internal)
+  0. [Imports and Exports](#imports-and-exports)
+  0. [null and undefined](#null-and-undefined)
+  0. [General Assumptions](#general-assumptions)
+  0. [Asserts](#asserts)
   0. [=== and !== Operators](#===-and-!==-Operators)
   0. [Eval](#eval)
   0. [TSLint](#tslint)
@@ -59,6 +64,7 @@ This is the TypeScript style guide that we use internally at Platypi! It is *sem
 ## Files
   - All TypeScript files must have a ".ts" extension.
   - They should be all camelCase case, and only include letters and numbers.
+  - 1 file per logical component (e.g. parser, scanner, emitter, checker).
   - **All files should end in a new line.** This is necessary for some Unix systems.
 
 **[top](#table-of-contents)**
@@ -397,11 +403,25 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 ## Names
 
   - All variable and function names should be formed with alphanumeric `A-Z, a-z, 0-9` charcters using lowerCamelCase or UpperCamelCase notiation.
+  - Use whole words in names when possible.
 
 ### Variables, Modules, and Functions
 
   - Variable, module, and function names should use lowerCamelCase.
+  
+#### Boolean
 
+  - Use semantic prefixes for boolean variables and properties (e.g. is-, has-, was-, ...).
+  
+  ```typescript
+  // bad
+  let validPerson: boolean = person.valid();
+  
+  // good
+  let isValidPerson: boolean = person.isValid();
+  ```
+  
+  
 ### Use of var, let, and const
 
   - Use `const` where appropriate, for values that should never change
@@ -433,10 +453,11 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
 
 ### Classes
 
-  - Classes/Constructors should use UpperCamelCase (PascalCase).
+  - Classes/Constructors functions should use UpperCamelCase (PascalCase).
   - `Private` and `private static` members in classes should be denoted with the `private` keyword.
   - `Protected`  members in classes should be denoted with the `protected` keyword.
   - Use `public` instance members only when they are used by other parts of the application.
+  - Use lowerCamelCase for all fields, properties and methods names (Don't use "_"  as a prefix for private properties).
 
   ```typescript
   class Person {
@@ -450,11 +471,11 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
           this.fullName = firstName + ' ' + lastName;
       }
 
-      toString() {
+      public toString(): string {
           return this.fullName;
       }
 
-      protected walkFor(millis: number) {
+      public walkFor(millis: number): void {
           console.log(this.fullName + ' is now walking.');
 
           // Wait for millis milliseconds to stop walking
@@ -464,6 +485,70 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
       }
   }
   ```
+    - Don't use parameter properties.
+    
+  ```typescript
+  // bad
+  class Person {
+      constructor(public firstName: string, public lastName: string) {
+      }
+  }
+  
+  // good
+  class Person {
+      public firstName: string;
+      public lastName: string;
+
+      constructor(firstName: string, lastName: string) {
+          this.firstName = firstName;
+          this.lastName = lastName;
+      }
+  }
+  ```    
+  
+  - Use following order for class members:
+  0. public fields.
+  0. private fields.
+  0. constructor.
+  0. public methods.
+  0. private methods.
+  
+  ```typescript
+  class Person {
+      public firstName: string;
+      public lastName: string;
+
+      private age: number;
+
+      constructor(firstName: string, lastName: string, age: number) {
+          this.firstName = firstName;
+          this.lastName = lastName;
+          this.age = age;
+      }
+      
+      public sayGreetings(): string {
+        var greetings: string = 'Hello, ' + this.getFullName();
+        return greetings;
+      }
+      
+      private getFullName(): string {
+        var fullName: string = this.firstName + ' ' + this.lastName;
+        return fullName;
+      }
+  }
+
+**[top](#table-of-contents)**
+
+### Enumerations
+
+  - Use class with static fields for enumerations.
+
+  ```typescript
+  export class Gender {
+    public static male: number = 0;
+    public static female: number = 1;
+  }
+  ``` 
 
 **[top](#table-of-contents)**
 
@@ -875,13 +960,6 @@ Blank lines improve code readability by allowing the developer to logically grou
 
 **[top](#table-of-contents)**
 
-## === and !== Operators
-
-  - It is better to use `===` and `!==` operators whenever possible.
-  - `==` and `!=` operators do type coercion, which can lead to headaches when debugging code.
-
-**[top](#table-of-contents)**
-
 ## Typings
 
 ### External
@@ -918,6 +996,58 @@ Blank lines improve code readability by allowing the developer to logically grou
       return result;
   }
   ```
+
+**[top](#table-of-contents)**
+
+## Imports and Exports
+
+  - Use ES6 import notation for all imports.
+  - Use relative paths for non-libary dependencies in imports.
+  - Declare all imports at the beginning of the file.
+  - Don't use `export default` statement.
+
+  ```typescript
+    // bad
+    import { Entity } from '/app/common/models/entity';
+  
+    // good
+    import { Entity } from './entity';
+    import * as _ from 'lodash';
+  ```
+
+**[top](#table-of-contents)**
+
+## null and undefined
+
+  - Use `undefined`, do not use `null`.
+
+**[top](#table-of-contents)**
+
+## General Assumptions
+
+  - Consider objects like Nodes, Symbols, etc. as immutable outside the component that created them. Do not change them.
+  - Consider arrays as immutable by default after creation.
+
+**[top](#table-of-contents)**
+
+## Asserts
+
+  - Use Asserts for all methods/functions parameters that cannot be undefined.
+  ```typescript
+    class UserApiService {
+      constructor(httpService: HttpService) {
+        Assert.isNotNull(httpService, 'httpService');
+      }
+    }
+  ```
+  
+
+**[top](#table-of-contents)**
+
+## === and !== Operators
+
+  - It is better to use `===` and `!==` operators whenever possible.
+  - `==` and `!=` operators do type coercion, which can lead to headaches when debugging code.
 
 **[top](#table-of-contents)**
 
