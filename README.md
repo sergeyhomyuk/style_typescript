@@ -272,6 +272,8 @@ JSDocs can be interpreted by IDEs for better intellisense. Below is an example o
   // b will be defined on global scope.
   let a = b = 2, c = 4;
   ```
+  
+**[top](#table-of-contents)**
 
 ## Function Declarations
 
